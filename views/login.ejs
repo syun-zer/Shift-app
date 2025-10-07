@@ -1,0 +1,28 @@
+<form onsubmit="login(event)">
+  <label for="username">username:</label>
+  <input type="text" name="username" id="username" required>
+  <label for="password" >Password:</label>
+  <input type="password" name="password" id="password" required>
+  <button type="submit">Login</button>
+</form>
+
+<script>
+  async function login(e) {
+    e.preventDefault();
+
+    const username = document.querySelector('#username').value;
+    const password = document.querySelector('#password').value;
+
+    const response = await fetch('/api/users/login',{
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({ username,password })
+    });
+
+    if (response.ok) {
+      window.location.href = '/shifts';
+    } else {
+      alert('Login failed');
+    }
+  }
+</script>

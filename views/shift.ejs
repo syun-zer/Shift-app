@@ -1,0 +1,105 @@
+ <button id="logoutButton" onclick="logout()">Logout</button>
+    <h2>Add new shift</h2>
+    <form id="shiftForm" onsubmit="create(event)">
+      <label for="date">date:</label>
+      <input type="datetime-local" name="date" id="date" required>
+      <button type="submit">Add Shift</button>
+    </form>
+    <hr />
+    <h2>Your Future-shift list:</h2>
+    <ul id="futureShifts"></ul>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        fetchShifts();
+      });
+
+      async function fetchShifts() {
+        const response = await fetch('/api/shifts');
+        const shifts = await response.json();
+
+        const futureShifts = document.querySelector('#futureShifts');
+        futureShifts.innerHTML = '';
+        shifts.futureShifts.forEach(shift => {
+          const li = document.createElement('li');
+          li.textContent = shift.date;
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Delete';
+          deleteButton.className = 'mini';
+          deleteButton.onclick = () => deleteShift(shift.id);
+          li.appendChild(deleteButton);
+          futureShifts.appendChild(li);
+        });
+      }
+
+      async function create(e) {
+        e.preventDefault();
+
+        const date = document.getElementById('date').value;
+
+        try {
+          await addShift(date);
+          const shiftForm = document.getElementById('shiftForm');
+          shiftForm.reset();
+          //時間は前回の入力から引き継げるようにしたい。
+        } catch (error) {
+          console.error('シフトの追加に失敗しました:', error);
+          alert('シフトの追加に失敗しました。もう一度お試しください。');
+        }
+      }
+
+      async function addShift(date) {
+        try {
+          const response = await fetch('/api/shifts', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ date })
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          fetchShifts();
+        } catch (error) {
+          console.error('API呼び出しエラー:', error);
+          throw error; // 上位の関数でもエラーハンドリングできるように再スロー
+        }
+      }
+
+      async function deleteShift(id) {
+        try {
+          const response = await fetch(`/api/shifts/${id}`, {
+            method: 'DELETE'
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          fetchShifts();
+        } catch (error) {
+          console.error('シフトの削除に失敗しました:', error);
+          alert('シフトの削除に失敗しました。もう一度お試しください。');
+        }
+      }
+
+      async function logout() {
+        try {
+          const response = await fetch('/api/users/logout', {
+            method: 'POST'
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          window.location.href = '/';
+        } catch (error) {
+          console.error('ログアウトに失敗しました:', error);
+          alert('ログアウトに失敗しました。ページを再読み込みしてください。');
+        }
+      }
+    </script>
