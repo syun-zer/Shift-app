@@ -7,6 +7,7 @@ const {
   getFutureShiftsByUserId,
   deleteShiftById,
   deleteOldShifts,
+  getAllUsersShiftsForMonth,
 } = require('../../models/shift');
 
 router.post('/',async(req,res) => {
@@ -49,6 +50,25 @@ router.delete('/:id',async(req,res)=> {
     res.status(200).json({ message: 'Shift deleted'});
   }catch(err){
    res.status(500).json({ error: 'Failed to delete shift' });
+  }
+});
+
+// Step 2: 月別シフト取得のテスト用エンドポイント（認証なし）
+router.get('/monthly-test/:year/:month', async (req, res) => {
+  const { year, month } = req.params;
+  console.log(`GET /api/shifts/monthly-test/${year}/${month} called`);
+  
+  try {
+    const shifts = await getAllUsersShiftsForMonth(parseInt(year), parseInt(month));
+    console.log('Monthly shifts:', shifts);
+    res.status(200).json({ 
+      year: parseInt(year),
+      month: parseInt(month), 
+      shifts 
+    });
+  } catch (err) {
+    console.error('Error getting monthly shifts:', err);
+    res.status(500).json({ error: 'Failed to get monthly shifts' });
   }
 });
 

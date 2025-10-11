@@ -66,5 +66,34 @@ async function deleteOldShifts(daysOld = 50) {
   return result.changes;
 }
 
+// Step 2: 指定月の全ユーザーのシフトを取得
+async function getAllUsersShiftsForMonth(year, month) {
+  const db = await openDb();
+  
+  // 月の最初の日と最後の日を計算
+  const startDate = `${year}-${month.toString().padStart(2, '0')}-01`;
+  const nextMonth = month === 12 ? 1 : month + 1;
+  const nextYear = month === 12 ? year + 1 : year;
+  const endDate = `${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`;
+  
+  console.log(`Getting shifts for ${year}/${month}: ${startDate} to ${endDate}`);
+  
+  return await db.all(`
+    SELECT s.*, u.username 
+    FROM shifts s 
+    JOIN users u ON s.userId = u.id 
+    WHERE s.date >= ? AND s.date < ?
+    ORDER BY s.date, u.username
+  `, startDate, endDate);
+}
 
-module.exports = { createShift, getShiftsByUserId, getFutureShiftsByUserId, deleteShiftById, updateShift, deleteOldShifts };
+
+module.exports = { 
+  createShift, 
+  getShiftsByUserId, 
+  getFutureShiftsByUserId, 
+  deleteShiftById, 
+  updateShift, 
+  deleteOldShifts,
+  getAllUsersShiftsForMonth 
+};

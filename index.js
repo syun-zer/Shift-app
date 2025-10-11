@@ -21,6 +21,7 @@ app.use(session({
 
 app.use('/',pageRouter);
 app.use('/api/users',userApiRouter);
+app.use('/api/shifts/monthly-test', shiftApiRouter); // テスト用：認証なしでもアクセス可能
 app.use('/api/shifts',isLoggedIn, shiftApiRouter);
 
 function isLoggedIn(req,res,next) {
