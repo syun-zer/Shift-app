@@ -31,4 +31,16 @@ router.post('/logout',(req,res) => {
   });
 });
 
+// Step 1: 全ユーザー取得のテスト用エンドポイント
+router.get('/all', async (req, res) => {
+  try {
+    const users = await User.getAllUsers();
+    console.log('All users:', users);
+    res.status(200).json({ users });
+  } catch (err) {
+    console.error('Error getting all users:', err);
+    res.status(500).json({ error: 'Failed to get users' });
+  }
+});
+
 module.exports = router;

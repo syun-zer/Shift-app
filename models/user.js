@@ -39,4 +39,9 @@ async function findUserById(id) {
     "SELECT * FROM users WHERE id = ?",id);
 }
 
-module.exports = { findUserByUsername,findUserById };
+async function getAllUsers() {
+  const db = await openDb();
+  return await db.all("SELECT id, username FROM users ORDER BY username");
+}
+
+module.exports = { findUserByUsername, findUserById, getAllUsers };
