@@ -64,7 +64,7 @@
           //時間は前回の入力から引き継げるようにしたい。
         } catch (error) {
           console.error('シフトの追加に失敗しました:', error);
-          alert('シフトの追加に失敗しました。もう一度お試しください。');
+          alert(`シフトの追加に失敗しました: ${error.message}`);
         }
       }
 
@@ -79,7 +79,14 @@
           });
           
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            if (response.status === 400 && errorData.error) {
+              // 重複エラーなど、ユーザーに表示すべきエラー
+              throw new Error(errorData.error);
+            } else {
+              // その他のサーバーエラー
+              throw new Error('サーバーエラーが発生しました');
+            }
           }
           
           fetchShifts();

@@ -19,7 +19,11 @@ router.post('/',async(req,res) => {
     res.status(201).json({ message: 'shift added'});
   } catch (err) {
     console.error('Error creating shift:', err);
-    res.status(500).json({ error:'Failed to add shift'});
+    if (err.message === 'この日時のシフトは既に登録されています') {
+      res.status(400).json({ error: err.message });
+    } else {
+      res.status(500).json({ error:'Failed to add shift'});
+    }
   }
 });
 

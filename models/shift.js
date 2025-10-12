@@ -20,6 +20,17 @@ async function openDb() {
 
 async function createShift(userId, date) {
   const db = await openDb();
+  
+  // 重複チェック：同じユーザーの同じ日付のシフトが既に存在するかチェック
+  const existingShift = await db.get(
+    `SELECT * FROM shifts WHERE userId = ? AND date = ?`,
+    userId, date
+  );
+  
+  if (existingShift) {
+    throw new Error('この日時のシフトは既に登録されています');
+  }
+  
   const query = `INSERT INTO shifts (
   userId,date
   )VALUES(?,?)`;
