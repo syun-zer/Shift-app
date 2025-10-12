@@ -36,19 +36,27 @@ router.get('/schedule', async (req, res) => {
   }
   
   try {
+    // URLパラメータから年月を取得、デフォルトは現在の年月
+    const currentDate = new Date();
+    const year = parseInt(req.query.year) || currentDate.getFullYear();
+    const month = parseInt(req.query.month) || (currentDate.getMonth() + 1);
+
     // Step 1: 全ユーザー取得
     const users = await getAllUsers();
     
-    // Step 2: 月別シフト取得（2025年10月）
-    const shifts = await getAllUsersShiftsForMonth(2025, 10);
+    // Step 2: 月別シフト取得
+    const shifts = await getAllUsersShiftsForMonth(year, month);
     
     // Step 5: 必要人数取得
     const requiredStaff = await getRequiredStaffCount();
     
-    // 10月の日付配列を生成
+    // 指定された月の日数を取得
+    const daysInMonth = new Date(year, month, 0).getDate();
+    
+    // 日付配列を生成
     const dates = [];
-    for (let day = 1; day <= 31; day++) {
-      const date = `2025-10-${day.toString().padStart(2, '0')}`;
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
       
       // この日のシフト人数を計算
       const dailyShifts = shifts.filter(shift => shift.date.startsWith(date));
@@ -58,7 +66,7 @@ router.get('/schedule', async (req, res) => {
       dates.push({
         day: day,
         date: date,
-        dayOfWeek: new Date(2025, 9, day).toLocaleDateString('ja-JP', { weekday: 'short' }),
+        dayOfWeek: new Date(year, month - 1, day).toLocaleDateString('ja-JP', { weekday: 'short' }),
         actualCount: actualCount,
         isShortStaffed: isShortStaffed
       });
@@ -75,6 +83,8 @@ router.get('/schedule', async (req, res) => {
       shifts: shifts,
       dates: dates,
       requiredStaff: requiredStaff,
+      currentYear: year,
+      currentMonth: month,
       isLoggedIn: true
     });
   } catch (err) {

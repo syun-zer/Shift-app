@@ -14,8 +14,27 @@
 }
 </style>
 
-<h2>月間シフト表（2025年10月）</h2>
-<div style="margin-bottom: 10px;">
+<h2>月間シフト表（<%= currentYear %>年<%= currentMonth %>月）</h2>
+
+<div style="margin-bottom: 20px;">
+  <form method="GET" action="/schedule" style="display: inline-block; margin-right: 20px;">
+    <label for="year">年:</label>
+    <select name="year" id="year">
+      <% for (let y = 2024; y <= 2026; y++) { %>
+        <option value="<%= y %>" <%= y === currentYear ? 'selected' : '' %>><%= y %></option>
+      <% } %>
+    </select>
+    
+    <label for="month">月:</label>
+    <select name="month" id="month">
+      <% for (let m = 1; m <= 12; m++) { %>
+        <option value="<%= m %>" <%= m === currentMonth ? 'selected' : '' %>><%= m %></option>
+      <% } %>
+    </select>
+    
+    <button type="submit">表示</button>
+  </form>
+  
   <strong>必要人数: <%= requiredStaff %>人</strong>
 </div>
 

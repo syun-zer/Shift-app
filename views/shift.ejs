@@ -16,7 +16,26 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         fetchShifts();
+        loadPreviousTime();
       });
+
+      function loadPreviousTime() {
+        const savedTime = localStorage.getItem('lastShiftTime');
+        if (savedTime) {
+          const dateInput = document.getElementById('date');
+          const today = new Date().toISOString().split('T')[0]; // 今日の日付（YYYY-MM-DD形式）
+          dateInput.value = today + 'T' + savedTime; // 今日の日付 + 保存された時間
+        }
+      }
+
+      function saveCurrentTime(dateValue) {
+        if (dateValue) {
+          const timeOnly = dateValue.split('T')[1]; // 時間部分のみ取得 (HH:MM)
+          if (timeOnly) {
+            localStorage.setItem('lastShiftTime', timeOnly);
+          }
+        }
+      }
 
       async function fetchShifts() {
         const response = await fetch('/api/shifts');
@@ -55,13 +74,20 @@
       async function create(e) {
         e.preventDefault();
 
-        const date = document.getElementById('date').value;
+        const dateInput = document.getElementById('date');
+        const date = dateInput.value;
+
+        // 時間を保存
+        saveCurrentTime(date);
 
         try {
           await addShift(date);
-          const shiftForm = document.getElementById('shiftForm');
-          shiftForm.reset();
-          //時間は前回の入力から引き継げるようにしたい。
+          
+          // 日付部分のみリセット（時間は保持）
+          const timeOnly = date.split('T')[1]; // 時間部分を取得
+          const today = new Date().toISOString().split('T')[0]; // 今日の日付
+          dateInput.value = today + 'T' + timeOnly; // 今日の日付 + 入力された時間
+          
         } catch (error) {
           console.error('シフトの追加に失敗しました:', error);
           alert(`シフトの追加に失敗しました: ${error.message}`);
