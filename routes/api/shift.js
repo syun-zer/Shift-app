@@ -29,12 +29,22 @@ router.get('/',async(req,res) => {
     // 50日前の古いシフトを自動削除
     await deleteOldShifts(50);
     
-    // 効率的に未来のシフトのみを取得
-    const futureShifts = await getFutureShiftsByUserId(req.session.userId);
-    console.log('Retrieved future shifts:', futureShifts);
-    
-    // 過去のシフトは削除されているので空の配列を返す
-    const pastShifts = [];
+    // 全てのシフトを取得
+    const shifts = await getShiftsByUserId(req.session.userId);
+    console.log('Retrieved shifts:', shifts);
+    const currentTime = new Date();
+    console.log('Current time:', currentTime.toISOString());
+
+    const pastShifts = shifts.filter(shift => {
+      const shiftDate = new Date(shift.date);
+      console.log('Comparing:', shiftDate.toISOString(), '<', currentTime.toISOString(), '=', shiftDate < currentTime);
+      return shiftDate < currentTime;
+    });
+
+    const futureShifts = shifts.filter(shift => {
+      const shiftDate = new Date(shift.date);
+      return shiftDate >= currentTime;
+    });
     
     console.log('Filtered shifts:', { futureShifts, pastShifts });
     return res.status(200).json({futureShifts,pastShifts});

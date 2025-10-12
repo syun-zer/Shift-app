@@ -8,6 +8,10 @@
     <hr />
     <h2>Your Future-shift list:</h2>
     <ul id="futureShifts"></ul>
+    
+    <hr />
+    <h2>Your Past-shift list:</h2>
+    <ul id="pastShifts"></ul>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
@@ -18,6 +22,7 @@
         const response = await fetch('/api/shifts');
         const shifts = await response.json();
 
+        // 未来のシフト表示
         const futureShifts = document.querySelector('#futureShifts');
         futureShifts.innerHTML = '';
         shifts.futureShifts.forEach(shift => {
@@ -29,6 +34,21 @@
           deleteButton.onclick = () => deleteShift(shift.id);
           li.appendChild(deleteButton);
           futureShifts.appendChild(li);
+        });
+
+        // 過去のシフト表示
+        const pastShifts = document.querySelector('#pastShifts');
+        pastShifts.innerHTML = '';
+        shifts.pastShifts.forEach(shift => {
+          const li = document.createElement('li');
+          li.textContent = shift.date;
+          li.style.color = '#666'; // 過去のシフトは薄い色で表示
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Delete';
+          deleteButton.className = 'mini';
+          deleteButton.onclick = () => deleteShift(shift.id);
+          li.appendChild(deleteButton);
+          pastShifts.appendChild(li);
         });
       }
 
