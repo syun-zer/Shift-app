@@ -1,35 +1,30 @@
-<h2>月間シフト表（ダミー）</h2>
-<table border="1">
+<h2>月間シフト表（2025年10月）</h2>
+<table border="1" style="border-collapse: collapse;">
   <thead>
     <tr>
       <th>日付</th>
-      <th>user1</th>
-      <th>taro</th>
-      <th>hanako</th>
-      <th>sachiko</th>
+      <% users.forEach(user => { %>
+        <th><%= user.username %></th>
+      <% }); %>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>10/1</td>
-      <td>○</td>
-      <td></td>
-      <td>○</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>10/2</td>
-      <td></td>
-      <td>○</td>
-      <td></td>
-      <td>○</td>
-    </tr>
-    <tr>
-      <td>10/3</td>
-      <td>○</td>
-      <td>○</td>
-      <td></td>
-      <td>○</td>
-    </tr>
+    <% dates.forEach(dateInfo => { %>
+      <tr>
+        <td><%= dateInfo.day %>(<%= dateInfo.dayOfWeek %>)</td>
+        <% users.forEach(user => { %>
+          <%
+            // この日付にこのユーザーのシフトがあるかチェック
+            const hasShift = shifts.some(shift => 
+              shift.userId === user.id && 
+              shift.date.startsWith(dateInfo.date)
+            );
+          %>
+          <td style="text-align: center; width: 60px;">
+            <%= hasShift ? '○' : '' %>
+          </td>
+        <% }); %>
+      </tr>
+    <% }); %>
   </tbody>
 </table>
