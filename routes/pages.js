@@ -15,7 +15,7 @@ router.get('/',(req,res) => {
 router.get('/shifts',(req,res)=> {
   if(req.session.userId) {
     res.render('layout',{
-      title:'Shift Manager',content:'shift'
+      title:'Shift Manager',content:'shift', isLoggedIn: true
     });
   } else {
     res.redirect('/login');
@@ -24,12 +24,17 @@ router.get('/shifts',(req,res)=> {
 
 router.get('/login',(req,res)=> {
   res.render('layout',{
-    title:'Login',content:'login'
+    title:'Login',content:'login', isLoggedIn: false
   });
 });
 
 // Step 3: スケジュールページ
 router.get('/schedule', async (req, res) => {
+  // 認証チェック
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+  
   try {
     // Step 1: 全ユーザー取得
     const users = await getAllUsers();
@@ -69,7 +74,8 @@ router.get('/schedule', async (req, res) => {
       users: users,
       shifts: shifts,
       dates: dates,
-      requiredStaff: requiredStaff
+      requiredStaff: requiredStaff,
+      isLoggedIn: true
     });
   } catch (err) {
     console.error('Error in /schedule:', err);

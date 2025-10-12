@@ -9,6 +9,13 @@
 <body>
   <header>
     <h1><%=title %></h1>
+    <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn) { %>
+    <nav style="margin: 10px 0; padding: 10px; background-color: #f5f5f5; border-radius: 5px;">
+      <a href="/shifts" style="margin-right: 15px; text-decoration: none; color: #007bff;">個人シフト管理</a>
+      <a href="/schedule" style="margin-right: 15px; text-decoration: none; color: #007bff;">月間シフト表</a>
+      <a href="/login" style="text-decoration: none; color: #dc3545;">ログアウト</a>
+    </nav>
+    <% } %>
   </header>
   <main>
     <%- include(content) %>
