@@ -30,8 +30,8 @@ router.post('/',async(req,res) => {
 router.get('/',async(req,res) => {
   console.log('GET /api/shifts called with userId:', req.session.userId);
   try {
-    // 50日前の古いシフトを自動削除
-    await deleteOldShifts(50);
+    // 1年前の古いシフトを自動削除
+    await deleteOldShifts(365);
     
     // 全てのシフトを取得
     const shifts = await getShiftsByUserId(req.session.userId);

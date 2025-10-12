@@ -63,7 +63,7 @@ async function updateShift(id, newDate) {
   );
 }
 
-async function deleteOldShifts(daysOld = 50) {
+async function deleteOldShifts(daysOld = 365) {
   const db = await openDb();
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - daysOld);
