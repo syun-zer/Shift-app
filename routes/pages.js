@@ -25,4 +25,12 @@ router.get('/login',(req,res)=> {
   });
 });
 
+// Step 3: スケジュールページ
+router.get('/schedule', (req, res) => {
+  res.render('layout', {
+    title: '月間シフト表',
+    content: 'schedule'
+  });
+});
+
 module.exports = router;
