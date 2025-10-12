@@ -1,4 +1,24 @@
+<style>
+.staff-count {
+  text-align: center;
+  font-weight: bold;
+}
+.staff-sufficient {
+  color: #4caf50;
+}
+.staff-insufficient {
+  color: #f44336;
+}
+.short-staffed-row {
+  background-color: #ffebee;
+}
+</style>
+
 <h2>月間シフト表（2025年10月）</h2>
+<div style="margin-bottom: 10px;">
+  <strong>必要人数: <%= requiredStaff %>人</strong>
+</div>
+
 <table border="1" style="border-collapse: collapse;">
   <thead>
     <tr>
@@ -6,11 +26,12 @@
       <% users.forEach(user => { %>
         <th><%= user.username %></th>
       <% }); %>
+      <th>実際/必要</th>
     </tr>
   </thead>
   <tbody>
     <% dates.forEach(dateInfo => { %>
-      <tr>
+      <tr class="<%= dateInfo.isShortStaffed ? 'short-staffed-row' : '' %>">
         <td><%= dateInfo.day %>(<%= dateInfo.dayOfWeek %>)</td>
         <% users.forEach(user => { %>
           <%
@@ -24,7 +45,16 @@
             <%= hasShift ? '○' : '' %>
           </td>
         <% }); %>
+        <td class="staff-count <%= dateInfo.isShortStaffed ? 'staff-insufficient' : 'staff-sufficient' %>">
+          <%= dateInfo.actualCount %>/<%= requiredStaff %>
+          <%= dateInfo.isShortStaffed ? '⚠️' : '✓' %>
+        </td>
       </tr>
     <% }); %>
   </tbody>
 </table>
+
+<div style="margin-top: 10px; font-size: 14px;">
+  <span style="background-color: #ffebee; padding: 2px 5px;">🟥 人数不足</span>
+  <span style="margin-left: 10px;">⬜ 必要人数確保</span>
+</div>
