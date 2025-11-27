@@ -24,7 +24,7 @@ router.get('/shifts',(req,res)=> {
 
 router.get('/login',(req,res)=> {
   res.render('layout',{
-    title:'Login',content:'login', isLoggedIn: false
+    title:'ログイン',content:'login', isLoggedIn: false
   });
 });
 
