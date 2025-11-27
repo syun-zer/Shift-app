@@ -15,7 +15,7 @@ router.get('/',(req,res) => {
 router.get('/shifts',(req,res)=> {
   if(req.session.userId) {
     res.render('layout',{
-      title:'Shift Manager',content:'shift', isLoggedIn: true
+      title:'シフト管理',content:'shift', isLoggedIn: true
     });
   } else {
     res.redirect('/login');
