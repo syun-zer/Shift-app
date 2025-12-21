@@ -20,6 +20,17 @@
 - **ログイン機能**: セッション管理による認証
 - **アクセス制御**: 認証必須ページの保護
 
+## 📸 スクリーンショット
+
+### ログインページ
+![ログインページ](screenshots/login-page.png)
+
+### 個人シフト管理画面
+![個人シフト管理](screenshots/shift-management.png)
+
+### 月間シフト表
+![月間シフト表](screenshots/monthly-schedule.png)
+
 ## 🚀 セットアップ
 
 ### 必要環境
